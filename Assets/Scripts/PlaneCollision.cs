@@ -9,7 +9,7 @@ public class PlaneCollision : MonoBehaviour
 
     private void Start()
     {
-        r = 0.5f;
+        r = gameObject.Radius();
         var planePos = planeToCollideWith.transform.position;
         var a = new Vector3(planePos.x + 10, planePos.y, planePos.z + 10);
         var b = new Vector3(planePos.x - 10, planePos.y, planePos.z - 10);

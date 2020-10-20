@@ -9,10 +9,10 @@ public class SphereCollision : MonoBehaviour
 
     void Start()
     {
-        r1 = GetComponent<MeshFilter>().mesh.bounds.extents.x;
-        r2 = sphereToCollideWith.GetComponent<MeshFilter>().mesh.bounds.extents.x;
+        r1 = gameObject.Radius();
+        r2 = sphereToCollideWith.Radius();
     }
-
+    
     void Update()
     {
         var a = sphereToCollideWith.transform.position - transform.position;
