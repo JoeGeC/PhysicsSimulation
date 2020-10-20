@@ -1,18 +1,13 @@
 ﻿using UnityEngine;
  
-public class NewtonTrajectory : MonoBehaviour
+public class NewtonTrajectory : Trajectory
 {
-    private Vector3 velocity = new Vector3(10, 10, 10);
-    private Vector3 acceleration = new Vector3(0, -9.8f, 0);
     private const float TimeStep = 1.0f / 60.0f;
     private Vector3 startingPosition;
     private float nextUpdateTime;
 
     void Start()
     {
-        var sphereProperties = GetComponent<Sphere>();
-        velocity = sphereProperties.velocity;
-        acceleration = sphereProperties.acceleration;
         startingPosition = transform.position;
     }
     
@@ -31,8 +26,8 @@ public class NewtonTrajectory : MonoBehaviour
         return new Vector3(newX, newY, newZ);
     }
 
-    private float CalculateAxis(float startingPos, float velocityAxis, float acceleration)
+    private float CalculateAxis(float startingPos, float velocityAxis, float axisAcceleration)
     {
-        return startingPos + velocityAxis * nextUpdateTime + acceleration * (nextUpdateTime * nextUpdateTime) / 2; 
+        return startingPos + velocityAxis * nextUpdateTime + axisAcceleration * (nextUpdateTime * nextUpdateTime) / 2; 
     }
 }

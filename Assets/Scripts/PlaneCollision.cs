@@ -3,14 +3,12 @@ using UnityEngine;
 public class PlaneCollision : MonoBehaviour
 {
     public GameObject planeToCollideWith;
+    public Trajectory trajectory;
     private float r;
-    private Vector3 v;
     private Vector3 n;
 
     private void Start()
     {
-        var sphereProperties = GetComponent<Sphere>();
-        v = sphereProperties.velocity;
         r = 0.5f;
         var planePos = planeToCollideWith.transform.position;
         var a = new Vector3(planePos.x + 10, planePos.y, planePos.z + 10);
@@ -26,10 +24,10 @@ public class PlaneCollision : MonoBehaviour
         var q2 = 90.0f - Angle(p, n);
         var d = ClosestDistanceBetweenSphereAndPlane(q2, p);
         var vc = DistanceFromSphereToCollisionPos(d);
-        if (CollisionDistanceIsLessThanLengthOfV(vc)) { StopSphere(); }
+        if (CollisionDistanceIsLessThanLengthOfV(vc)) { trajectory.Stop(); }
     }
 
-    private bool SphereIsHeadingTowardPlane() { return Vector3.Angle(n, -v) <= 90.0f; }
+    private bool SphereIsHeadingTowardPlane() { return Vector3.Angle(n, -trajectory.velocity) <= 90.0f; }
 
     private static float Angle(Vector3 vector1, Vector3 vector2)
     {
@@ -43,17 +41,8 @@ public class PlaneCollision : MonoBehaviour
 
     private double DistanceFromSphereToCollisionPos(double closestDistanceFromSphereToCollision)
     {
-        return (closestDistanceFromSphereToCollision - r) / Mathf.Cos(Angle(v, -n) * Mathf.Deg2Rad);
+        return (closestDistanceFromSphereToCollision - r) / Mathf.Cos(Angle(trajectory.velocity, -n) * Mathf.Deg2Rad);
     }
 
     private bool CollisionDistanceIsLessThanLengthOfV(double collisionDistance) { return collisionDistance <= r; }
-    
-    private void StopSphere()
-    {
-        var sphereProperties = GetComponent<Sphere>();
-        var emptyVector = new Vector3(0, 0, 0);
-        sphereProperties.velocity = emptyVector;
-        sphereProperties.acceleration = emptyVector;
-        GetComponent<EulerTrajectory>().UpdateProperties();
-    }
 }
