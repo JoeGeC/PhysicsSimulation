@@ -11,7 +11,7 @@ public class PlaneCollision : MonoBehaviour
     {
         var sphereProperties = GetComponent<Sphere>();
         v = sphereProperties.velocity;
-        r = sphereProperties.radius;
+        r = 0.5f;
         var planePos = planeToCollideWith.transform.position;
         var a = new Vector3(planePos.x + 10, planePos.y, planePos.z + 10);
         var b = new Vector3(planePos.x - 10, planePos.y, planePos.z - 10);
@@ -26,7 +26,7 @@ public class PlaneCollision : MonoBehaviour
         var q2 = 90.0f - Angle(p, n);
         var d = ClosestDistanceBetweenSphereAndPlane(q2, p);
         var vc = DistanceFromSphereToCollisionPos(d);
-        if (CollisionDistanceIsLessThanLengthOfV(vc)) { GetComponent<Sphere>().velocity = new Vector3(0, 0, 0); }
+        if (CollisionDistanceIsLessThanLengthOfV(vc)) { StopSphere(); }
     }
 
     private bool SphereIsHeadingTowardPlane() { return Vector3.Angle(n, -v) <= 90.0f; }
@@ -47,4 +47,13 @@ public class PlaneCollision : MonoBehaviour
     }
 
     private bool CollisionDistanceIsLessThanLengthOfV(double collisionDistance) { return collisionDistance <= r; }
+    
+    private void StopSphere()
+    {
+        var sphereProperties = GetComponent<Sphere>();
+        var emptyVector = new Vector3(0, 0, 0);
+        sphereProperties.velocity = emptyVector;
+        sphereProperties.acceleration = emptyVector;
+        GetComponent<EulerTrajectory>().UpdateProperties();
+    }
 }

@@ -8,14 +8,19 @@ public class EulerTrajectory : MonoBehaviour
 
     private void Start()
     {
-        var sphereProperties = GetComponent<Sphere>();
-        velocity = sphereProperties.velocity;
-        acceleration = sphereProperties.acceleration;
+        UpdateProperties();
     }
 
     private void Update()
     {
         velocity += acceleration * TimeStep;
         transform.position += velocity * TimeStep;
+    }
+
+    public void UpdateProperties()
+    {
+        var sphereProperties = GetComponent<Sphere>();
+        velocity = sphereProperties.velocity;
+        acceleration = sphereProperties.acceleration;
     }
 }
