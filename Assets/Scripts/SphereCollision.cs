@@ -19,7 +19,7 @@ public class SphereCollision : MonoBehaviour
         var q = Angle(trajectory.velocity, a);
         var d = Mathf.Sin(q) * Vector3.Magnitude(a);
         if (!SpheresCanCollide(d)) return;
-        var e = Mathf.Sqrt((r1 + r2) * 2 - d * d);
+        var e = Mathf.Sqrt((r1 + r2) * (r1 + r2) - d * d);
         var vc = Mathf.Cos(q) * Vector3.Magnitude(a) - e;
         if (SpheresHaveCollided(vc)) trajectory.Stop();
     }
