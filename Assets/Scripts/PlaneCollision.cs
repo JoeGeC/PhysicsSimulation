@@ -9,8 +9,9 @@ public class PlaneCollision : MonoBehaviour
 
     private void Start()
     {
-        r = 0.5f;
-        v = GetComponent<EulerTrajectory>().velocity;
+        var sphereProperties = GetComponent<Sphere>();
+        v = sphereProperties.velocity;
+        r = sphereProperties.radius;
         var planePos = planeToCollideWith.transform.position;
         var a = new Vector3(planePos.x + 10, planePos.y, planePos.z + 10);
         var b = new Vector3(planePos.x - 10, planePos.y, planePos.z - 10);
@@ -25,7 +26,7 @@ public class PlaneCollision : MonoBehaviour
         var q2 = 90.0f - Angle(p, n);
         var d = ClosestDistanceBetweenSphereAndPlane(q2, p);
         var vc = DistanceFromSphereToCollisionPos(d);
-        if (CollisionDistanceIsLessThanLengthOfV(vc)) { GetComponent<EulerTrajectory>().velocity = new Vector3(0, 0, 0); }
+        if (CollisionDistanceIsLessThanLengthOfV(vc)) { GetComponent<Sphere>().velocity = new Vector3(0, 0, 0); }
     }
 
     private bool SphereIsHeadingTowardPlane() { return Vector3.Angle(n, -v) <= 90.0f; }
