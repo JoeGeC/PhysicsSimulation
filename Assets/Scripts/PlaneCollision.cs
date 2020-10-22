@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlaneCollision : MonoBehaviour
+public class PlaneCollision : Collision
 {
     public GameObject planeToCollideWith;
     public Trajectory trajectory;
@@ -17,14 +17,15 @@ public class PlaneCollision : MonoBehaviour
         n = Vector3.Cross(b - a, c - a).normalized * -1;
     }
 
-    void Update()
+    public override float CheckForCollision()
     {
-        if (!SphereIsHeadingTowardPlane()) return;
+        if (!SphereIsHeadingTowardPlane()) return 1.0f;
         var p = transform.position - planeToCollideWith.transform.position;
         var q2 = 90.0f - Angle(p, n);
         var d = ClosestDistanceBetweenSphereAndPlane(q2, p);
         var vc = DistanceFromSphereToCollisionPos(d);
-        if (CollisionDistanceIsLessThanLengthOfV(vc)) { trajectory.Stop(); }
+        if (HasCollided(vc)) { return vc / (trajectory.velocity.magnitude * trajectory.timeStep); }
+        return 1.0f;
     }
 
     private bool SphereIsHeadingTowardPlane() { return Vector3.Angle(n, -trajectory.velocity) <= 90.0f; }
@@ -39,10 +40,10 @@ public class PlaneCollision : MonoBehaviour
         return Mathf.Sin(q2 * Mathf.Deg2Rad) * Vector3.Magnitude(p);
     }
 
-    private double DistanceFromSphereToCollisionPos(double closestDistanceFromSphereToCollision)
+    private float DistanceFromSphereToCollisionPos(float closestDistanceFromSphereToCollision)
     {
         return (closestDistanceFromSphereToCollision - r) / Mathf.Cos(Angle(trajectory.velocity, -n) * Mathf.Deg2Rad);
     }
 
-    private bool CollisionDistanceIsLessThanLengthOfV(double collisionDistance) { return collisionDistance <= r; }
+    private bool HasCollided(double distanceToCollision) { return distanceToCollision <= trajectory.velocity.magnitude * trajectory.timeStep; }
 }

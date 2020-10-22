@@ -2,7 +2,6 @@
  
 public class NewtonTrajectory : Trajectory
 {
-    private const float TimeStep = 1.0f / 60.0f;
     private Vector3 startingPosition;
     private float nextUpdateTime;
 
@@ -15,7 +14,7 @@ public class NewtonTrajectory : Trajectory
     {
         if (Time.time < nextUpdateTime) return;
         transform.position = CalculateNewPosition();
-        nextUpdateTime += TimeStep;
+        nextUpdateTime += timeStep;
     }
 
     private Vector3 CalculateNewPosition()
