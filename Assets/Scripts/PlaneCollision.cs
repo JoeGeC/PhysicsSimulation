@@ -19,12 +19,14 @@ public class PlaneCollision : Collision
 
     public override float CheckForCollision()
     {
+        if (trajectory.velocity == Vector3.zero) return 0.0f;
         if (!SphereIsHeadingTowardPlane()) return 1.0f;
         var p = transform.position - planeToCollideWith.transform.position;
         var q2 = 90.0f - Angle(p, n);
         var d = ClosestDistanceBetweenSphereAndPlane(q2, p);
         var vc = DistanceFromSphereToCollisionPos(d);
-        if (HasCollided(vc)) { return vc / (trajectory.velocity.magnitude * trajectory.timeStep); }
+        if (vc < float.Epsilon) vc = 0.0f;
+        if (HasCollided(vc)) { return vc / (trajectory.velocity.magnitude * Time.deltaTime); }
         return 1.0f;
     }
 
@@ -45,5 +47,5 @@ public class PlaneCollision : Collision
         return (closestDistanceFromSphereToCollision - r) / Mathf.Cos(Angle(trajectory.velocity, -n) * Mathf.Deg2Rad);
     }
 
-    private bool HasCollided(double distanceToCollision) { return distanceToCollision <= trajectory.velocity.magnitude * trajectory.timeStep; }
+    private bool HasCollided(double distanceToCollision) { return distanceToCollision <= trajectory.velocity.magnitude * Time.deltaTime; }
 }

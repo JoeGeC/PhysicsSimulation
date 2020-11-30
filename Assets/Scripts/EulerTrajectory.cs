@@ -1,4 +1,6 @@
-﻿public class EulerTrajectory : Trajectory
+﻿using UnityEngine;
+
+public class EulerTrajectory : Trajectory
 {
     private float velocityModifier = 1.0f;
     private Collision sphereCollider;
@@ -14,8 +16,8 @@
     {
         if(sphereCollider) velocityModifier = sphereCollider.CheckForCollision();
         if(planeCollider) velocityModifier = planeCollider.CheckForCollision();
-        velocity += acceleration * timeStep;
+        velocity += acceleration * Time.deltaTime;
         velocity *= velocityModifier;
-        transform.position += velocity * timeStep;
+        transform.position += velocity * Time.deltaTime;
     }
 }

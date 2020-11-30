@@ -12,9 +12,8 @@ public class NewtonTrajectory : Trajectory
     
     void Update()
     {
-        if (Time.time < nextUpdateTime) return;
+        nextUpdateTime += Time.deltaTime;
         transform.position = CalculateNewPosition();
-        nextUpdateTime += timeStep;
     }
 
     private Vector3 CalculateNewPosition()

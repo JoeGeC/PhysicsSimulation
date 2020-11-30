@@ -15,14 +15,16 @@ public class SphereCollision : Collision
     
     public override float CheckForCollision()
     {
+        if (trajectory.velocity == Vector3.zero) return 0.0f;
         var vectorBetweenSpheres = sphereToCollideWith.transform.position - transform.position;
-        var sphereVelocityAngle = Angle(trajectory.velocity, vectorBetweenSpheres);
-        if (SphereIsHeadingTowardCollider(sphereVelocityAngle)) return 1.0f;
+        var sphereVelocityAngle = Angle(trajectory.velocity * Time.deltaTime, vectorBetweenSpheres);
+        if (!SphereIsHeadingTowardCollider(sphereVelocityAngle)) return 1.0f;
         var closestDistanceBetweenSpheres = Mathf.Sin(sphereVelocityAngle * Mathf.Deg2Rad) * Vector3.Magnitude(vectorBetweenSpheres);
         if (!SpheresCanCollide(closestDistanceBetweenSpheres)) return 1.0f;
         var collisionAndClosestDistance = Mathf.Sqrt((r1 + r2) * (r1 + r2) - closestDistanceBetweenSpheres * closestDistanceBetweenSpheres);
         var distanceToCollision = Mathf.Cos(sphereVelocityAngle * Mathf.Deg2Rad) * Vector3.Magnitude(vectorBetweenSpheres) - collisionAndClosestDistance;
-        if (SpheresHaveCollided(distanceToCollision)) return distanceToCollision / (trajectory.velocity.magnitude * trajectory.timeStep);
+        if (distanceToCollision < float.Epsilon) distanceToCollision = 0.0f;
+        if (SpheresHaveCollided(distanceToCollision)) return distanceToCollision / (trajectory.velocity.magnitude * Time.deltaTime);
         return 1.0f;
     }
 
@@ -35,5 +37,8 @@ public class SphereCollision : Collision
 
     private bool SpheresCanCollide(float shortestDistanceBetweenSpheres) { return shortestDistanceBetweenSpheres <= r1 + r2; }
 
-    private bool SpheresHaveCollided(float distanceBetweenSpheres) { return distanceBetweenSpheres <= trajectory.velocity.magnitude * trajectory.timeStep; }
+    private bool SpheresHaveCollided(float distanceBetweenSpheres)
+    {
+        return distanceBetweenSpheres <= trajectory.velocity.magnitude * Time.deltaTime;
+    }
 }
