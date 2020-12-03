@@ -59,7 +59,8 @@ public class PlaneCollision : MonoBehaviour
     
     private Vector3 BounceVelocity()
     {
-        var bounceUnitVector = 2 * planeNormal * Vector3.Dot(planeNormal, -thisSphere.velocity) + thisSphere.velocity;
+        var bounceUnitVector = 2 * planeNormal * Vector3.Dot(planeNormal, -thisSphere.velocity * Time.deltaTime)
+                               + thisSphere.velocity * Time.deltaTime;
         return bounceUnitVector * (thisSphere.velocity.magnitude * Time.deltaTime);
     }
 }
