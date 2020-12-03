@@ -1,32 +1,25 @@
 ﻿using UnityEngine;
 
-public class SphereCollision : Collision
+public class SphereCollision : MonoBehaviour
 {
-    public GameObject sphereToCollideWith;
-    private Trajectory sphereToCollideWithTrajectory;
-    private Trajectory trajectory;
-    private float radius;
-    private float otherSphereRadius;
+    private Sphere thisSphere;
     private static float SphereMass { get; } = 1.0f;
 
     void Start()
     {
-        sphereToCollideWithTrajectory = sphereToCollideWith.GetComponent<Trajectory>();
-        trajectory = GetComponent<Trajectory>();
-        radius = gameObject.Radius();
-        otherSphereRadius = sphereToCollideWith.Radius();
+        thisSphere = GetComponent<Sphere>();
     }
     
-    public override void CheckForCollision()
+    public void CheckForCollision(Sphere colliderSphere)
     {
-        if (!trajectory.Moving()) return;
-        var vectorBetweenSpheres = sphereToCollideWith.transform.position - transform.position;
-        var sphereVelocityAngle = Angle(trajectory.velocity * Time.deltaTime, vectorBetweenSpheres);
+        if (!thisSphere.Moving()) return;
+        var vectorBetweenSpheres = colliderSphere.transform.position - transform.position;
+        var sphereVelocityAngle = Angle(thisSphere.velocity * Time.deltaTime, vectorBetweenSpheres);
         if (!SphereIsHeadingTowardCollider(sphereVelocityAngle)) return;
         var closestDistanceBetweenSpheres = Mathf.Sin(sphereVelocityAngle * Mathf.Deg2Rad) * Vector3.Magnitude(vectorBetweenSpheres);
-        if (!SpheresCanCollide(closestDistanceBetweenSpheres)) return;
-        if (!SpheresHaveCollided(closestDistanceBetweenSpheres, sphereVelocityAngle, vectorBetweenSpheres)) return;
-        Bounce(vectorBetweenSpheres);
+        if (!SpheresCanCollide(closestDistanceBetweenSpheres, colliderSphere)) return;
+        if (!SpheresHaveCollided(colliderSphere, closestDistanceBetweenSpheres, sphereVelocityAngle, vectorBetweenSpheres)) return;
+        Bounce(colliderSphere, vectorBetweenSpheres);
     }
 
     private static float Angle(Vector3 vector1, Vector3 vector2)
@@ -36,33 +29,34 @@ public class SphereCollision : Collision
     
     private static bool SphereIsHeadingTowardCollider(float sphereVelocityAngle) { return sphereVelocityAngle < 90; }
 
-    private bool SpheresCanCollide(float shortestDistanceBetweenSpheres) { return shortestDistanceBetweenSpheres <= radius + otherSphereRadius; }
+    private bool SpheresCanCollide(float shortestDistanceBetweenSpheres, Sphere colliderSphere) { return shortestDistanceBetweenSpheres <= thisSphere.radius + colliderSphere.radius; }
 
-    private bool SpheresHaveCollided(float closestDistanceBetweenSpheres, float sphereVelocityAngle, Vector3 vectorBetweenSpheres)
+    private bool SpheresHaveCollided(Sphere colliderSphere, float closestDistanceBetweenSpheres, float sphereVelocityAngle, Vector3 vectorBetweenSpheres)
     {
-        var collisionAndClosestDistance = Mathf.Sqrt((radius + otherSphereRadius) * (radius + otherSphereRadius) - closestDistanceBetweenSpheres * closestDistanceBetweenSpheres);
+        var sumOfRadii = thisSphere.radius + colliderSphere.radius;
+        var collisionAndClosestDistance = Mathf.Sqrt(sumOfRadii * sumOfRadii - closestDistanceBetweenSpheres * closestDistanceBetweenSpheres);
         var distanceToCollision = Mathf.Cos(sphereVelocityAngle * Mathf.Deg2Rad) * Vector3.Magnitude(vectorBetweenSpheres) - collisionAndClosestDistance;
         if (distanceToCollision < float.Epsilon) distanceToCollision = 0.0f;
-        return distanceToCollision <= trajectory.velocity.magnitude * Time.deltaTime;
+        return distanceToCollision <= thisSphere.velocity.magnitude * Time.deltaTime;
     }
 
-    private void Bounce(Vector3 vectorBetweenSpheres)
+    private void Bounce(Sphere colliderSphere, Vector3 vectorBetweenSpheres)
     {
-        sphereToCollideWithTrajectory.velocity = ColliderBounceVelocity(vectorBetweenSpheres);
-        trajectory.velocity = BounceVelocity();
+        colliderSphere.velocity = ColliderBounceVelocity(colliderSphere, vectorBetweenSpheres);
+        thisSphere.velocity = BounceVelocity(colliderSphere);
     }
 
-    private Vector3 ColliderBounceVelocity(Vector3 vectorBetweenSpheres)
+    private Vector3 ColliderBounceVelocity(Sphere colliderSphere, Vector3 vectorBetweenSpheres)
     {
         var positionOfSphere = transform.position;
-        var positionOfContact = positionOfSphere + radius * vectorBetweenSpheres;
-        var g = sphereToCollideWith.transform.position - positionOfContact;
-        var q = Angle(trajectory.velocity, g);
-        return Mathf.Cos(q * Mathf.Deg2Rad) * (trajectory.velocity / SphereMass);
+        var positionOfContact = positionOfSphere + thisSphere.radius * vectorBetweenSpheres;
+        var g = colliderSphere.transform.position - positionOfContact;
+        var q = Angle(thisSphere.velocity, g);
+        return Mathf.Cos(q * Mathf.Deg2Rad) * (thisSphere.velocity / SphereMass);
     }
 
-    private Vector3 BounceVelocity()
+    private Vector3 BounceVelocity(Sphere colliderSphere)
     {
-        return (trajectory.velocity * SphereMass - sphereToCollideWithTrajectory.velocity * SphereMass) / SphereMass;
+        return (thisSphere.velocity * SphereMass - colliderSphere.velocity * SphereMass) / SphereMass;
     }
 }

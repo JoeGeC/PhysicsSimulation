@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
  
-public class NewtonTrajectory : Trajectory
+public class NewtonSphere : Sphere
 {
     private Vector3 startingPosition;
     private float nextUpdateTime;
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         startingPosition = transform.position;
     }
     

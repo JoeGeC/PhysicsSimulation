@@ -2,5 +2,5 @@
 
 public abstract class Collision : MonoBehaviour
 {
-    public abstract void CheckForCollision();
+    public abstract void CheckForCollision(Sphere colliderSphere);
 }
