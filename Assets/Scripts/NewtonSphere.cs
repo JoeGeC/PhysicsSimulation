@@ -11,9 +11,9 @@ public class NewtonSphere : Sphere
         startingPosition = transform.position;
     }
     
-    void Update()
+    void FixedUpdate()
     {
-        nextUpdateTime += Time.deltaTime;
+        nextUpdateTime += Time.fixedDeltaTime;
         transform.position = CalculateNewPosition();
     }
 

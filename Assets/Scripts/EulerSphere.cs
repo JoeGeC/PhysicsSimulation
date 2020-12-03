@@ -13,11 +13,11 @@ public class EulerSphere : Sphere
         planeCollider = gameObject.AddComponent<PlaneCollision>();
     }
     
-    private void Update()
+    private void FixedUpdate()
     {
         foreach(var sphere in entityHandler.spheres) sphereCollider.CheckForCollision(sphere);
         foreach(var plane in entityHandler.planes) planeCollider.CheckForCollision(plane);
-        if(Moving()) velocity += Acceleration * Time.deltaTime;
-        transform.position += velocity * Time.deltaTime;
+        if(Moving()) velocity += Acceleration * Time.fixedDeltaTime;
+        transform.position += velocity * Time.fixedDeltaTime;
     }
 }

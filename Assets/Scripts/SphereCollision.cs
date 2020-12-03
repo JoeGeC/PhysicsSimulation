@@ -14,7 +14,7 @@ public class SphereCollision : MonoBehaviour
     {
         if (!thisSphere.Moving()) return;
         var vectorBetweenSpheres = colliderSphere.transform.position - transform.position;
-        var sphereVelocityAngle = Angle(thisSphere.velocity * Time.deltaTime, vectorBetweenSpheres);
+        var sphereVelocityAngle = Angle(thisSphere.velocity * Time.fixedDeltaTime, vectorBetweenSpheres);
         if (!SphereIsHeadingTowardCollider(sphereVelocityAngle)) return;
         var closestDistanceBetweenSpheres = Mathf.Sin(sphereVelocityAngle * Mathf.Deg2Rad) * Vector3.Magnitude(vectorBetweenSpheres);
         if (!SpheresCanCollide(closestDistanceBetweenSpheres, colliderSphere)) return;
@@ -37,7 +37,7 @@ public class SphereCollision : MonoBehaviour
         var collisionAndClosestDistance = Mathf.Sqrt(sumOfRadii * sumOfRadii - closestDistanceBetweenSpheres * closestDistanceBetweenSpheres);
         var distanceToCollision = Mathf.Cos(sphereVelocityAngle * Mathf.Deg2Rad) * Vector3.Magnitude(vectorBetweenSpheres) - collisionAndClosestDistance;
         if (distanceToCollision < float.Epsilon) distanceToCollision = 0.0f;
-        return distanceToCollision <= thisSphere.velocity.magnitude * Time.deltaTime;
+        return distanceToCollision <= thisSphere.velocity.magnitude * Time.fixedDeltaTime;
     }
 
     private void Bounce(Sphere colliderSphere, Vector3 vectorBetweenSpheres)

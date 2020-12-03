@@ -45,7 +45,7 @@ public class PlaneCollision : MonoBehaviour
         return (closestDistanceFromSphereToCollision - gameObject.Radius()) / Mathf.Cos(Angle(thisSphere.velocity, -planeNormal) * Mathf.Deg2Rad);
     }
 
-    private bool HasCollided(double distanceToCollision) { return distanceToCollision <= thisSphere.velocity.magnitude * Time.deltaTime; }
+    private bool HasCollided(double distanceToCollision) { return distanceToCollision <= thisSphere.velocity.magnitude * Time.fixedDeltaTime; }
 
     private float DistanceToCollision(GameObject plane)
     {
@@ -59,8 +59,8 @@ public class PlaneCollision : MonoBehaviour
     
     private Vector3 BounceVelocity()
     {
-        var bounceUnitVector = 2 * planeNormal * Vector3.Dot(planeNormal, -thisSphere.velocity * Time.deltaTime)
-                               + thisSphere.velocity * Time.deltaTime;
-        return bounceUnitVector * (thisSphere.velocity.magnitude * Time.deltaTime);
+        var bounceUnitVector = 2 * planeNormal * Vector3.Dot(planeNormal, -thisSphere.velocity * Time.fixedDeltaTime)
+                               + thisSphere.velocity * Time.fixedDeltaTime;
+        return bounceUnitVector * (thisSphere.velocity.magnitude * Time.fixedDeltaTime);
     }
 }
