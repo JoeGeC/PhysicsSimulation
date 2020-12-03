@@ -3,11 +3,12 @@ using UnityEngine;
 public class PlaneCollision : Collision
 {
     public GameObject planeToCollideWith;
-    public Trajectory trajectory;
+    private Trajectory trajectory;
     private Vector3 planeNormal;
 
     private void Start()
     {
+        trajectory = GetComponent<Trajectory>();
         var planePos = planeToCollideWith.transform.position;
         var a = new Vector3(planePos.x + 10, planePos.y, planePos.z + 10);
         var b = new Vector3(planePos.x - 10, planePos.y, planePos.z - 10);
@@ -54,8 +55,7 @@ public class PlaneCollision : Collision
     
     private Vector3 BounceVelocity()
     {
-        var bounceUnitVector = 2 * planeNormal * Vector3.Dot(planeNormal, -trajectory.velocity * Time.deltaTime) +
-                               trajectory.velocity * Time.deltaTime;
-        return bounceUnitVector * (trajectory.velocity * Time.deltaTime).magnitude;
+        var bounceUnitVector = 2 * planeNormal * Vector3.Dot(planeNormal, -trajectory.velocity) + trajectory.velocity;
+        return bounceUnitVector * (trajectory.velocity.magnitude * Time.deltaTime);
     }
 }

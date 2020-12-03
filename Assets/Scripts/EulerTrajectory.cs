@@ -15,7 +15,7 @@ public class EulerTrajectory : Trajectory
     {
         if(sphereCollider) sphereCollider.CheckForCollision();
         if(planeCollider) planeCollider.CheckForCollision();
-        if(Moving()) velocity += acceleration * Time.deltaTime;
+        if(Moving()) velocity += Acceleration * Time.deltaTime;
         transform.position += velocity * Time.deltaTime;
     }
 }

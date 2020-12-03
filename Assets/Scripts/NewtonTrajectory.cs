@@ -18,9 +18,9 @@ public class NewtonTrajectory : Trajectory
 
     private Vector3 CalculateNewPosition()
     {
-        var newX = CalculateAxis(startingPosition.x, velocity.x, acceleration.x);
-        var newY = CalculateAxis(startingPosition.y, velocity.y, acceleration.y);
-        var newZ = CalculateAxis(startingPosition.z, velocity.z, acceleration.z);
+        var newX = CalculateAxis(startingPosition.x, velocity.x, Acceleration.x);
+        var newY = CalculateAxis(startingPosition.y, velocity.y, Acceleration.y);
+        var newZ = CalculateAxis(startingPosition.z, velocity.z, Acceleration.z);
         return new Vector3(newX, newY, newZ);
     }
 
