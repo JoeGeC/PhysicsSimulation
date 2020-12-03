@@ -2,5 +2,5 @@
 
 public abstract class Collision : MonoBehaviour
 {
-    public abstract float CheckForCollision();
+    public abstract void CheckForCollision();
 }

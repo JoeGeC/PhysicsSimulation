@@ -2,7 +2,6 @@
 
 public class EulerTrajectory : Trajectory
 {
-    private float velocityModifier = 1.0f;
     private Collision sphereCollider;
     private Collision planeCollider;
 
@@ -14,10 +13,9 @@ public class EulerTrajectory : Trajectory
     
     private void Update()
     {
-        if(sphereCollider) velocityModifier = sphereCollider.CheckForCollision();
-        if(planeCollider) velocityModifier = planeCollider.CheckForCollision();
-        velocity += acceleration * Time.deltaTime;
-        velocity *= velocityModifier;
+        if(sphereCollider) sphereCollider.CheckForCollision();
+        if(planeCollider) planeCollider.CheckForCollision();
+        if(Moving()) velocity += acceleration * Time.deltaTime;
         transform.position += velocity * Time.deltaTime;
     }
 }
