@@ -7,7 +7,7 @@ public abstract class Sphere : MonoBehaviour
     public float radius;
     
     public bool Moving() { return velocity != Vector3.zero; }
-    
+
     protected virtual void Start()
     {
         radius = gameObject.Radius();

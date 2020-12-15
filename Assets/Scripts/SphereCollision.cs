@@ -50,9 +50,9 @@ public class SphereCollision : MonoBehaviour
     {
         var positionOfSphere = transform.position;
         var positionOfContact = positionOfSphere + thisSphere.radius * vectorBetweenSpheres;
-        var g = colliderSphere.transform.position - positionOfContact;
-        var q = Angle(thisSphere.velocity, g);
-        return Mathf.Cos(q * Mathf.Deg2Rad) * (thisSphere.velocity / SphereMass);
+        var colliderPositionOfContact = colliderSphere.transform.position - positionOfContact;
+        var angleBetweenContactPositions = Angle(thisSphere.velocity, colliderPositionOfContact);
+        return Mathf.Cos(angleBetweenContactPositions * Mathf.Deg2Rad) * (thisSphere.velocity / SphereMass);
     }
 
     private Vector3 BounceVelocity(Sphere colliderSphere)

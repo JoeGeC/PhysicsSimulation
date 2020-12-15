@@ -19,7 +19,7 @@ public class PlaneCollision : MonoBehaviour
         thisSphere.velocity = BounceVelocity();
     }
     
-    private Vector3 PlaneNormal(GameObject plane)
+    private static Vector3 PlaneNormal(GameObject plane)
     {
         var planePos = plane.transform.position;
         var a = new Vector3(planePos.x + 10, planePos.y, planePos.z + 10);
@@ -30,9 +30,16 @@ public class PlaneCollision : MonoBehaviour
 
     private bool HeadingTowardPlane() { return Vector3.Angle(planeNormal, -thisSphere.velocity) <= 90.0f; }
 
-    private static float Angle(Vector3 vector1, Vector3 vector2)
+    private bool HasCollided(double distanceToCollision) { return distanceToCollision <= thisSphere.velocity.magnitude * Time.fixedDeltaTime; }
+
+    private float DistanceToCollision(GameObject plane)
     {
-        return Mathf.Acos(Vector3.Dot(vector1, vector2) / (Vector3.Magnitude(vector1) * Vector3.Magnitude(vector2))) * Mathf.Rad2Deg;
+        var p = transform.position - plane.transform.position;
+        var angleBetweenPandPlane = 90.0f - Vector3.Angle(p, planeNormal);
+        var closestDistanceToPlane = ClosestDistanceBetween(angleBetweenPandPlane, p);
+        var distanceToCollision = DistanceToCollisionPos(closestDistanceToPlane);
+        if (distanceToCollision < float.Epsilon) distanceToCollision = 0.0f;
+        return distanceToCollision;
     }
     
     private static float ClosestDistanceBetween(float q2, Vector3 p)
@@ -42,19 +49,7 @@ public class PlaneCollision : MonoBehaviour
 
     private float DistanceToCollisionPos(float closestDistanceFromSphereToCollision)
     {
-        return (closestDistanceFromSphereToCollision - gameObject.Radius()) / Mathf.Cos(Angle(thisSphere.velocity, -planeNormal) * Mathf.Deg2Rad);
-    }
-
-    private bool HasCollided(double distanceToCollision) { return distanceToCollision <= thisSphere.velocity.magnitude * Time.fixedDeltaTime; }
-
-    private float DistanceToCollision(GameObject plane)
-    {
-        var p = transform.position - plane.transform.position;
-        var angleBetweenPandPlane = 90.0f - Angle(p, planeNormal);
-        var closestDistanceToPlane = ClosestDistanceBetween(angleBetweenPandPlane, p);
-        var distanceToCollision = DistanceToCollisionPos(closestDistanceToPlane);
-        if (distanceToCollision < float.Epsilon) distanceToCollision = 0.0f;
-        return distanceToCollision;
+        return (closestDistanceFromSphereToCollision - gameObject.Radius()) / Mathf.Cos(Vector3.Angle(thisSphere.velocity, -planeNormal) * Mathf.Deg2Rad);
     }
     
     private Vector3 BounceVelocity()
